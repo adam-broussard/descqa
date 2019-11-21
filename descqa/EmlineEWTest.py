@@ -117,7 +117,7 @@ class EmlineEWTest(BaseValidationTest):
         data = catalog_instance.get_quantities(['galaxyID',
                                                 'redshift',
                                                 'emissionLines/totalLineLuminosity:balmerAlpha6563',
-                                                'sed_6548_406'
+                                                'sed_6548_406',
                                                 'mag_u_lsst',
                                                 'mag_g_lsst',
                                                 'mag_r_lsst',
@@ -136,13 +136,13 @@ class EmlineEWTest(BaseValidationTest):
         sz_small = sz[indices]
         galaxyID_small = galaxyID[indices]
         Halpha_small = Halpha[indices]
-        fnu_continuum_small = fnu_continuum[indices]
+        lnu_continuum_small = lnu_continuum[indices]
 
-        flam_continuum_small = fnu_continuum_small * c.c / ((6548 + 0.5*406)*u.Angstrom)**2
+        llam_continuum_small = lnu_continuum_small * c.c / ((6548 + 0.5*406)*u.Angstrom)**2
 
         self.id = galaxyID_small
         self.ha = Halpha_small
-        self.ha_ew = (Halpha_small / flam_continuum_small).to('Angstrom').value
+        self.ha_ew = (Halpha_small / llam_continuum_small).to('Angstrom').value
 
 
         #=========================================
