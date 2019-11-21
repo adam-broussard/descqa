@@ -1,0 +1,12 @@
+subclass_name: EmlineEWTest.EmlineEWTest
+sdss_file: 'sdss_emission_lines/sdss_query_snr10_ew.csv'
+sdss_drawnum: 30000
+sim_drawnum: 30000
+mag_u_cut: 26.3
+mag_g_cut: 27.5
+mag_r_cut: 27.7
+mag_i_cut: 27.0
+mag_z_cut: 26.2
+mag_y_cut: 24.9
+truncate_cat_name: False
+description: 'Plots H-alpha luminosity vs. equivalent width to validate emission line normalization relative to continuum.'

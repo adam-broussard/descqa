@@ -19,9 +19,9 @@ emline_names = {'ha': r'H$\alpha$', 'hb': r'H$\beta$', 'oii': '[OII]', 'oiii': '
 
 __all__ = ['EmlineRatioTest']
 
-class EmlineRatioTest(BaseValidationTest):
+class EmlineEWTest(BaseValidationTest):
     """
-    Validation test for the relaive luminosity of emission lines in a catalog
+    Validation test for H-alpha luminosity vs. equivalent width to validate emission line normalization relative to continuum.
 
     Parameters
     ----------
@@ -62,8 +62,6 @@ class EmlineRatioTest(BaseValidationTest):
 
         # load test config options
         self.kwargs = kwargs
-        self.emline_ratio1 = kwargs.get('emline_ratio1', 'oii/oiii') # Currently does not support other emission line ratios
-        self.emline_ratio2 = kwargs.get('emline_ratio2', 'hb/oiii') # Currently does not support other emission line ratios
         sdss_file = kwargs.get('sdss_file', 'sdss_emission_lines/sdss_query_snr10_ew.csv')
         # self.sdsscat = sdsscat(self.data_dir + '/' + sdss_file)
         self.sdsscat = sdsscat('descqa/data/' + sdss_file)
