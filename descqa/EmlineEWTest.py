@@ -186,15 +186,6 @@ class EmlineEWTest(BaseValidationTest):
             sdss_draw_inds = np.random.choice(np.arange(len(sdss_dist[0])), size=self.sdss_drawnum)
             sdss_dist = sdss_dist[:, sdss_draw_inds]
 
-        # Shift the median of the simulated galaxies to match that of the SDSS galaxies
-        # before performing the comparison
-
-        medianshift = np.nanmedian(sdss_dist, axis=1).reshape(2, 1) - np.nanmedian(sim_dist, axis=1).reshape(2, 1)
-
-        medianmatch_sim_dist = sim_dist + medianshift
-
-        pvalue, KSstat = kstest_2d(sdss_dist, medianmatch_sim_dist)
-
         # Plotting stuff
 
         xlabel = r'$\log_{10}$(EW$_\mathrm{H\alpha}$)'
