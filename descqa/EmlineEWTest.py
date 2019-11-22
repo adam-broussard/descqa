@@ -165,7 +165,7 @@ class EmlineEWTest(BaseValidationTest):
             return TestResult(pvalue, passed=False, summary='P-value must exceed 1e-4 and total median shift must be less than or equal to 0.25 dex.')
 
 
-    def makeplot(self, catalog_name):
+    def makeplot(self, catalog_name, x_range=(-4, 4), y_range=(35, 45)):
         """
         Make a summary plot of the test results
         """
@@ -177,16 +177,16 @@ class EmlineEWTest(BaseValidationTest):
         sp1 = fig.add_subplot(121)
         sp2 = fig.add_subplot(122)
 
-        sdss_dist = np.vstack((np.log10(self.sdsscat.ha_ew), np.log10(self.sdsscat.ha)))
-        sim_dist = np.vstack((np.log10(self.ha_ew), np.log10(self.ha)))
+        sdss_dist = np.vstack((np.log10(self.sdsscat.ha_ew), np.log10(self.sdsscat.ha_lum)))
+        sim_dist = np.vstack((np.log10(self.ha_ew), np.log10(self.ha_lum)))
 
         xlabel = ''
         ylabel = ''
 
         # Generate each distribution
 
-        sp1.hist2d(*sdss_dist, bins=50, range=[[-1.2, 1.2], [-1.25, 1]], norm=LogNorm(), cmap='plasma_r')
-        sp2.hist2d(*sim_dist, bins=50, range=[[-1.2, 1.2], [-1.25, 1]], norm=LogNorm(), cmap='plasma_r')
+        sp1.hist2d(*sdss_dist, bins=50, range=[x_range, y_range], norm=LogNorm(), cmap='plasma_r')
+        sp2.hist2d(*sim_dist, bins=50, range=[x_range, y_range], norm=LogNorm(), cmap='plasma_r')
 
         # Draw a number of SDSS galaxies equal to self.sdss_drawnum
 
@@ -210,10 +210,10 @@ class EmlineEWTest(BaseValidationTest):
         sp1.set_xlabel(xlabel, fontsize=20)
         sp1.set_ylabel(ylabel, fontsize=20)
         sp2.set_xlabel(xlabel, fontsize=20)
-        sp1.set_xlim(-1.2, 1.2)
-        sp1.set_ylim(-1.25, 1)
-        sp2.set_xlim(-1.2, 1.2)
-        sp2.set_ylim(-1.25, 1)
+        sp1.set_xlim(x_range)
+        sp1.set_ylim(y_range)
+        sp2.set_xlim(x_range)
+        sp2.set_ylim(y_range)
 
         sp2.set_yticklabels([])
 
