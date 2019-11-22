@@ -122,20 +122,20 @@ class EmlineEWTest(BaseValidationTest):
                                                 'mag_i_lsst',
                                                 'mag_z_lsst',
                                                 'mag_y_lsst'], filters=(uband_maglim | gband_maglim | rband_maglim | iband_maglim | zband_maglim | yband_maglim))
-        Halpha = data['emissionLines/totalLineLuminosity:balmerAlpha6563'] * 3.839e26*u.W
+        ha_lum = data['emissionLines/totalLineLuminosity:balmerAlpha6563'] * 3.839e26*u.W
         lnu_continuum = data['sed_6548_406'] * 4.4659e13*u.W/u.Hz
 
         # Reduce the sample size by drawing self.sim_drawnum galaxies
 
-        indices = np.random.choice(np.arange(len(Halpha)), size=self.sim_drawnum, replace=False)
+        indices = np.random.choice(np.arange(len(ha_lum)), size=self.sim_drawnum, replace=False)
 
-        Halpha_small = Halpha[indices]
+        ha_lum_small = ha_lum[indices]
         lnu_continuum_small = lnu_continuum[indices]
 
         llam_continuum_small = lnu_continuum_small * c.c / ((6548 + 0.5*406)*u.Angstrom)**2
 
-        self.ha = Halpha_small.to('erg/s').value
-        self.ha_ew = (Halpha_small / llam_continuum_small).to('Angstrom').value
+        self.ha_lum = ha_lum_small.to('erg/s').value
+        self.ha_ew = (ha_lum_small / llam_continuum_small).to('Angstrom').value
 
 
         #=========================================
@@ -151,7 +151,6 @@ class EmlineEWTest(BaseValidationTest):
         else:
             thisfig, pvalue, medianshift = self.makeplot(catalog_name)
 
-        thisfig, pvalue, medianshift = self.makeplot(catalog_name)
         self.figlist.append(thisfig)
         self.runcat_name.append(catalog_name)
 
@@ -390,7 +389,7 @@ class sdsscat:
             elif 'uncorr' in colname and 'ew' in colname:
 
                 multiplier = np.power(10, 0.4 * self.Calzetti2000(wave) * self.EBV * ((1./.44) - 1.))
-                setattr(self, colname[:-7], getattr(self, colname)*multiplier)
+                setattr(self, colname[:-7], getattr(self, colname)*multiplier*(1+self.z))
 
         self.ha_lum = self.ha * 4 * np.pi * (cosmo.luminosity_distance(self.z).to('cm').value)**2
 
