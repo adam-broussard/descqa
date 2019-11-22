@@ -224,8 +224,16 @@ class EmlineEWTest(BaseValidationTest):
         """
 
         with open(os.path.join(output_dir, 'Emline_Lum_Ratio_Summary.txt'), 'w') as writefile:
-            writefile.write('Simulation Galaxies Drawn: %i\n' % self.sim_drawnum)
-            writefile.write('SDSS Galaxies Drawn: %i\n' % self.sdss_drawnum)
+            if self.sim_drawnum != None:
+                writefile.write('Simulation Galaxies Drawn: %i\n' % self.sim_drawnum)
+            else:
+                writefile.write('Used all simulation galxies.')
+
+            if self.sdss_drawnum != None:
+                writefile.write('SDSS Galaxies Drawn: %i\n' % self.sdss_drawnum)
+            else:
+                writefile.write('Used all SDSS galaxies.')
+
             for thisband in ['u', 'g', 'r', 'i', 'z', 'y']:
                 writefile.write(thisband + '-band magnitude cut: %.1f\n' % getattr(self, 'mag_' + thisband + '_cut'))
             writefile.write('\n')
