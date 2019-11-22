@@ -62,9 +62,9 @@ class EmlineEWTest(BaseValidationTest):
 
         # load test config options
         self.kwargs = kwargs
-        sdss_file = kwargs.get('sdss_file', 'sdss_emission_lines/sdss_query_snr10_ew.csv')
+        sdss_file = kwargs.get('sdss_file', 'descqa/data/sdss_emission_lines/sdss_query_snr10_ew.csv')
         # self.sdsscat = sdsscat(self.data_dir + '/' + sdss_file)
-        self.sdsscat = sdsscat('descqa/data/' + sdss_file)
+        self.sdsscat = sdsscat(sdss_file)
 
         # The magnitude cuts for galaxies pulled from the catalog.  These numbers correspond to
         # a 5-sigma cut based on https://arxiv.org/pdf/0912.0201.pdf
@@ -85,6 +85,8 @@ class EmlineEWTest(BaseValidationTest):
 
         self.figlist = []
         self.runcat_name = []
+
+        self.truncate_cat_name = kwargs.get('truncate_cat_name', False)
 
 
     def run_on_single_catalog(self, catalog_instance, catalog_name, output_dir):
