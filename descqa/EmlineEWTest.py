@@ -185,29 +185,23 @@ class EmlineEWTest(BaseValidationTest):
         ylabel = ''
 
         # Generate each distribution
-        # dist1 is SDSS data
-        # dist2 is simulation data
 
-
-        dist1 = np.array(dist1)
-        dist2 = np.array(dist2)
-
-        sp1.hist2d(*dist1, bins=50, range=[[-1.2, 1.2], [-1.25, 1]], norm=LogNorm(), cmap='plasma_r')
-        sp2.hist2d(*dist2, bins=50, range=[[-1.2, 1.2], [-1.25, 1]], norm=LogNorm(), cmap='plasma_r')
+        sp1.hist2d(*sdss_dist, bins=50, range=[[-1.2, 1.2], [-1.25, 1]], norm=LogNorm(), cmap='plasma_r')
+        sp2.hist2d(*sim_dist, bins=50, range=[[-1.2, 1.2], [-1.25, 1]], norm=LogNorm(), cmap='plasma_r')
 
         # Draw a number of SDSS galaxies equal to self.sdss_drawnum
 
-        sdss_draw_inds = np.random.choice(np.arange(len(dist1[0])), size=self.sdss_drawnum)
-        dist1 = dist1[:, sdss_draw_inds]
+        sdss_draw_inds = np.random.choice(np.arange(len(sdss_dist[0])), size=self.sdss_drawnum)
+        sdss_dist = sdss_dist[:, sdss_draw_inds]
 
         # Shift the median of the simulated galaxies to match that of the SDSS galaxies
         # before performing the comparison
 
-        medianshift = np.nanmedian(dist1, axis=1).reshape(2, 1) - np.nanmedian(dist2, axis=1).reshape(2, 1)
+        medianshift = np.nanmedian(sdss_dist, axis=1).reshape(2, 1) - np.nanmedian(sim_dist, axis=1).reshape(2, 1)
 
-        medianmatch_dist2 = dist2 + medianshift
+        medianmatch_sim_dist = sim_dist + medianshift
 
-        pvalue, KSstat = kstest_2d(dist1, medianmatch_dist2)
+        pvalue, KSstat = kstest_2d(sdss_dist, medianmatch_sim_dist)
 
         # Plotting stuff
 
