@@ -147,22 +147,13 @@ class EmlineEWTest(BaseValidationTest):
         #=========================================
 
         if self.truncate_cat_name:
-            thisfig, pvalue, medianshift = self.makeplot(catalog_name.split('_')[0])
+            self.makeplot(catalog_name.split('_')[0])
         else:
-            thisfig, pvalue, medianshift = self.makeplot(catalog_name)
+            self.makeplot(catalog_name)
 
         self.figlist.append(thisfig)
         self.runcat_name.append(catalog_name)
 
-
-        if np.log10(pvalue) >= -4. and np.linalg.norm(medianshift) <= 0.25:
-            return TestResult(pvalue, passed=True)
-        elif np.linalg.norm(medianshift) <= 0.25:
-            return TestResult(pvalue, passed=False, summary='P-value must exceed 1e-4.')
-        elif np.log10(pvalue) >= -4.:
-            return TestResult(pvalue, passed=False, summary='Total median shift must be less than or equal to 0.25 dex.')
-        else:
-            return TestResult(pvalue, passed=False, summary='P-value must exceed 1e-4 and total median shift must be less than or equal to 0.25 dex.')
 
 
     def makeplot(self, catalog_name, x_range=(-4, 4), y_range=(35, 45)):
@@ -219,12 +210,9 @@ class EmlineEWTest(BaseValidationTest):
 
         plt.subplots_adjust(wspace=0.0)
 
-        sp2.text(0.02, 0.98, 'log p = %.2f\n' % np.log10(pvalue) + r'D$_\mathrm{KS}$' + ' = %.2f\nMed Shift = [%.2f, %.2f]' % (KSstat, *medianshift.T[0]), fontsize=14, transform=sp2.transAxes, ha='left', va='top', bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
-
         sp1.text(0.98, 0.02, 'SDSS', fontsize=24, ha='right', va='bottom', transform=sp1.transAxes)
         sp2.text(0.98, 0.02, catalog_name, fontsize=24, ha='right', va='bottom', transform=sp2.transAxes)
 
-        return fig, pvalue, medianshift
 
 
     def summary_file(self, output_dir):
@@ -265,58 +253,6 @@ class EmlineEWTest(BaseValidationTest):
             thisfig.savefig(os.path.join(output_dir, thiscat + '_emline_equiv_widths.png'), bbox_inches='tight')
             plt.close(thisfig)
 
-
-
-
-
-def fhCounts(x, edge):
-    # computes local CDF at a given point considering all possible axis orderings
-
-    templist = [np.sum((x[0, 0:] >= edge[0]) & (x[1, 0:] >= edge[1])),
-                np.sum((x[0, 0:] <= edge[0]) & (x[1, 0:] >= edge[1])),
-                np.sum((x[0, 0:] <= edge[0]) & (x[1, 0:] <= edge[1])),
-                np.sum((x[0, 0:] >= edge[0]) & (x[1, 0:] <= edge[1]))]
-    return templist
-
-def kstest_2d(dist1, dist2):
-    """
-    Perform the 2-D KS-test on dist1 and dist2.
-    """
-    num1 = dist1.shape[1]
-    num2 = dist2.shape[1]
-
-    KSstat = -np.inf
-
-    for iX in np.arange(0, num1+num2):
-
-        if iX < num1:
-            edge = dist1[0:, iX]
-        else:
-            edge = dist2[0:, iX-num1]
-
-        vfCDF1 = np.array(fhCounts(dist1, edge)) / num1
-        vfCDF2 = np.array(fhCounts(dist2, edge)) / num2
-
-        vfThisKSTS = np.abs(vfCDF1 - vfCDF2)
-        fKSTS = np.amax(vfThisKSTS)
-
-        if fKSTS > KSstat:
-            KSstat = fKSTS
-
-    # Peacock Z calculation and P estimation
-
-    n = num1 * num2 /(num1 + num2)
-    Zn = np.sqrt(n) * KSstat
-    Zinf = Zn / (1 - 0.53 * n**(-0.9))
-    pValue = 2 *np.exp(-2 * (Zinf - 0.5)**2)
-
-    # Clip invalid values for P
-    if pValue > 1.0:
-        pValue = 1.0
-
-#     H = (pValue <= alpha)
-
-    return pValue, KSstat
 
 
 
