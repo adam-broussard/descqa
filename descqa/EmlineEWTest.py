@@ -102,8 +102,6 @@ class EmlineEWTest(BaseValidationTest):
                                                 'mag_i_lsst',
                                                 'mag_z_lsst',
                                                 'mag_y_lsst',
-                                                'galaxyID',
-                                                'redshift',
                                                 'emissionLines/totalLineLuminosity:balmerAlpha6563',
                                                 'sed_6548_406']):
             return TestResult(skipped=True, summary='Necessary quantities are not present')
@@ -116,9 +114,7 @@ class EmlineEWTest(BaseValidationTest):
         yband_maglim = GCRQuery((np.isfinite, 'mag_y_lsst'), 'mag_y_lsst < %.1f' % self.mag_y_cut)
 
 
-        data = catalog_instance.get_quantities(['galaxyID',
-                                                'redshift',
-                                                'emissionLines/totalLineLuminosity:balmerAlpha6563',
+        data = catalog_instance.get_quantities(['emissionLines/totalLineLuminosity:balmerAlpha6563',
                                                 'sed_6548_406',
                                                 'mag_u_lsst',
                                                 'mag_g_lsst',
@@ -126,8 +122,6 @@ class EmlineEWTest(BaseValidationTest):
                                                 'mag_i_lsst',
                                                 'mag_z_lsst',
                                                 'mag_y_lsst'], filters=(uband_maglim | gband_maglim | rband_maglim | iband_maglim | zband_maglim | yband_maglim))
-        sz = data['redshift']
-        galaxyID = data['galaxyID']
         Halpha = data['emissionLines/totalLineLuminosity:balmerAlpha6563'] * 3.839e26*u.W
         lnu_continuum = data['sed_6548_406'] * 4.4659e13*u.W/u.Hz
 
@@ -135,15 +129,12 @@ class EmlineEWTest(BaseValidationTest):
 
         indices = np.random.choice(np.arange(len(Halpha)), size=self.sim_drawnum, replace=False)
 
-        sz_small = sz[indices]
-        galaxyID_small = galaxyID[indices]
         Halpha_small = Halpha[indices]
         lnu_continuum_small = lnu_continuum[indices]
 
         llam_continuum_small = lnu_continuum_small * c.c / ((6548 + 0.5*406)*u.Angstrom)**2
 
-        self.id = galaxyID_small
-        self.ha = Halpha_small
+        self.ha = Halpha_small.to('erg/s').value
         self.ha_ew = (Halpha_small / llam_continuum_small).to('Angstrom').value
 
 
