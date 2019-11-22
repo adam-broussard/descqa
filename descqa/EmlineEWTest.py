@@ -153,7 +153,7 @@ class EmlineEWTest(BaseValidationTest):
         self.figlist.append(thisfig)
         self.runcat_name.append(catalog_name)
 
-        return TestResult(inspect_only=True, comment='Eventually, let\'s modify this so that there isa  numerical test!')
+        return TestResult(inspect_only=True, summary='Eventually, let\'s modify this so that there isa  numerical test!')
 
 
 
