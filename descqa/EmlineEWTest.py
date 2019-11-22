@@ -146,9 +146,9 @@ class EmlineEWTest(BaseValidationTest):
         #=========================================
 
         if self.truncate_cat_name:
-            self.makeplot(catalog_name.split('_')[0])
+            thisfig = self.makeplot(catalog_name.split('_')[0])
         else:
-            self.makeplot(catalog_name)
+            thisfig = self.makeplot(catalog_name)
 
         self.figlist.append(thisfig)
         self.runcat_name.append(catalog_name)
@@ -206,6 +206,9 @@ class EmlineEWTest(BaseValidationTest):
         sp1.text(0.98, 0.02, 'SDSS', fontsize=24, ha='right', va='bottom', transform=sp1.transAxes)
         sp2.text(0.98, 0.02, catalog_name, fontsize=24, ha='right', va='bottom', transform=sp2.transAxes)
 
+        return fig
+
+        
 
 
     def summary_file(self, output_dir):
