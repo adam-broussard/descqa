@@ -76,12 +76,11 @@ class EmlineEWTest(BaseValidationTest):
         self.mag_z_cut = kwargs.get('mag_z_cut', 26.2)
         self.mag_y_cut = kwargs.get('mag_y_cut', 24.9)
 
-        # These numbers dictate how large the two samples will be.  I have found that
-        # if the numbers get much larger than this, the 2-D KS test becomes more discriminatory
-        # than desired, but they can be changed if necessary
+        # If None, these will use the full sample.  Otherwise, it will draw a 
+        # random sample with the given size
 
-        self.sdss_drawnum = kwargs.get('sdss_drawnum', 30000)
-        self.sim_drawnum = kwargs.get('sim_drawnum', 30000)
+        self.sdss_drawnum = kwargs.get('sdss_drawnum', None)
+        self.sim_drawnum = kwargs.get('sim_drawnum', None)
 
         self.figlist = []
         self.runcat_name = []
@@ -127,15 +126,15 @@ class EmlineEWTest(BaseValidationTest):
 
         # Reduce the sample size by drawing self.sim_drawnum galaxies
 
-        indices = np.random.choice(np.arange(len(ha_lum)), size=self.sim_drawnum, replace=False)
+        if self.sim_drawnum != None:
+            indices = np.random.choice(np.arange(len(ha_lum)), size=self.sim_drawnum, replace=False)
+            ha_lum = ha_lum[indices]
+            lnu_continuum = lnu_continuum[indices]
 
-        ha_lum_small = ha_lum[indices]
-        lnu_continuum_small = lnu_continuum[indices]
+        llam_continuum = lnu_continuum * c.c / ((6548 + 0.5*406)*u.Angstrom)**2
 
-        llam_continuum_small = lnu_continuum_small * c.c / ((6548 + 0.5*406)*u.Angstrom)**2
-
-        self.ha_lum = ha_lum_small.to('erg/s').value
-        self.ha_ew = (ha_lum_small / llam_continuum_small).to('Angstrom').value
+        self.ha_lum = ha_lum.to('erg/s').value
+        self.ha_ew = (ha_lum / llam_continuum_small).to('Angstrom').value
 
 
         #=========================================
@@ -181,8 +180,9 @@ class EmlineEWTest(BaseValidationTest):
 
         # Draw a number of SDSS galaxies equal to self.sdss_drawnum
 
-        sdss_draw_inds = np.random.choice(np.arange(len(sdss_dist[0])), size=self.sdss_drawnum)
-        sdss_dist = sdss_dist[:, sdss_draw_inds]
+        if self.sdss_drawnum != None:
+            sdss_draw_inds = np.random.choice(np.arange(len(sdss_dist[0])), size=self.sdss_drawnum)
+            sdss_dist = sdss_dist[:, sdss_draw_inds]
 
         # Shift the median of the simulated galaxies to match that of the SDSS galaxies
         # before performing the comparison
