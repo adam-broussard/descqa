@@ -153,6 +153,8 @@ class EmlineEWTest(BaseValidationTest):
         self.figlist.append(thisfig)
         self.runcat_name.append(catalog_name)
 
+        return TestResult(inspect_only=True, comment='Eventually, let\'s modify this so that there isa  numerical test!')
+
 
 
     def makeplot(self, catalog_name, x_range=(-4, 4), y_range=(35, 45)):
