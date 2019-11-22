@@ -134,7 +134,7 @@ class EmlineEWTest(BaseValidationTest):
         llam_continuum = lnu_continuum * c.c / ((6548 + 0.5*406)*u.Angstrom)**2
 
         self.ha_lum = ha_lum.to('erg/s').value
-        self.ha_ew = (ha_lum / llam_continuum_small).to('Angstrom').value
+        self.ha_ew = (ha_lum / llam_continuum).to('Angstrom').value
 
 
         #=========================================
